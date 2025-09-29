@@ -1,4 +1,19 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+
+import { pgTable, text, timestamp, boolean, uuid } from "drizzle-orm/pg-core";
+
+export const posts = pgTable("posts", {
+ id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+});
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -60,10 +75,14 @@ export const verification = pgTable("verification", {
     .notNull(),
 });
 
-
 export const SCHEME = {
+    posts,
   user,
   session,
   account,
   verification,
-}
+
+};
+
+export type Post = typeof posts.$inferInsert;
+export type User = typeof user.$inferInsert;

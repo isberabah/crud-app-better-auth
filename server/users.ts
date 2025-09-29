@@ -1,5 +1,12 @@
+
+
+
 import { authClient } from "@/lib/auth-client"; //import the auth client
+
 import { redirect } from "next/navigation";
+
+
+
 
 interface SignUpEmailProps {
   email: string;
@@ -7,7 +14,11 @@ interface SignUpEmailProps {
   name: string;
 }
 
-export const SignUpEmail = async ({name,email,password}:SignUpEmailProps) => {
+export const SignUpEmail = async ({
+  name,
+  email,
+  password,
+}: SignUpEmailProps) => {
   const { data, error } = await authClient.signUp.email(
     {
       email, // user email address
@@ -26,25 +37,20 @@ export const SignUpEmail = async ({name,email,password}:SignUpEmailProps) => {
         // display the error message
         alert(ctx.error.message);
       },
-    },
-
+    }
   );
-     if(error){
-    return {error:error.message}
-   }
-   return {data};
+  if (error) {
+    return { error: error.message };
+  }
+  return { data };
 };
-
-
-
 
 interface SignInEmailProps {
   email: string;
   password: string;
-  
 }
 
-export const SignInEmail = async ({email,password}:SignInEmailProps) => {
+export const SignInEmail = async ({ email, password }: SignInEmailProps) => {
   const { data, error } = await authClient.signIn.email(
     {
       email, // user email address
@@ -57,17 +63,17 @@ export const SignInEmail = async ({email,password}:SignInEmailProps) => {
       },
       onSuccess: (ctx) => {
         //redirect to the dashboard or sign in page
-         redirect("/dashboard");
+        redirect("/dashboard");
       },
       onError: (ctx) => {
         // display the error message
         alert(ctx.error.message);
       },
-    },
-
+    }
   );
-     if(error){
-    return {error:error.message}
-   }
-   return {data};
+  if (error) {
+    return { error: error.message };
+  }
+  return { data };
 };
+

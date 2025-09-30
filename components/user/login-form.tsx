@@ -17,7 +17,9 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { SignInEmail } from "@/server/users";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().min(2).max(50),
@@ -28,6 +30,8 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,16 +43,19 @@ export function LoginForm({
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { email, password } = values;
-
-    const { data, error } = await SignInEmail({
-      email,
-      password,
-    });
-    if (error) {
-      alert(error.toString());
-      return;
-    } else {
-      redirect("/dashboard");
+    setIsLoading(true);
+    try {
+      await SignInEmail({
+        email,
+        password,
+      });
+      router.refresh();
+      router.push("/dashboard");
+    } catch (error) {
+      console.log("login error");
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
@@ -108,8 +115,8 @@ export function LoginForm({
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-          Login
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
           </Button>
           <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-background text-muted-foreground relative z-10 px-2">

@@ -27,7 +27,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Post } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
-import { createPost } from "@/server/posts";
+import { createPost, updatePost } from "@/server/posts";
 
 interface PostFormProps {
   post?: Post;
@@ -58,18 +58,18 @@ export default function PostForm({ post }: PostFormProps) {
         userId: userId!,
       };
 
-     /*  if (post) {
+      if (post) {
         await updatePost({
           ...postData,
           id: post.id,
         });
-      } else { */
+      } else { 
         await createPost ({
           ...postData,
           userId: userId!,
         });
-     /*  } */
-
+     
+      }
       form.reset();
 
       toast.success(`Post ${post ? "updated" : "added"} successfully`);

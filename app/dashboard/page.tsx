@@ -1,3 +1,5 @@
+
+
 import TableComponent from "@/components/blog/blog-table";
 import PostForm from "@/components/blog/PostForm";
 import { ModeToggle } from "@/components/toggle -button";
@@ -10,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import LogoutButton from "@/components/user/logout-button";
 import { auth } from "@/lib/auth";
 
 import {WrenchIcon } from "lucide-react";
@@ -31,6 +34,7 @@ const DashboardPage =  async () => {
   return (
     <div className="flex flex-col gap-4 max-w-7xl mx-auto p-4 md:p-24">
       <div className="flex items-center justify-end pt-4 pr-2 gap-x-3">
+        <LogoutButton/>
         <pre className="text-sm text-gray-300">Current USER: {session?.user?.name}</pre>
         <ModeToggle />
       </div>

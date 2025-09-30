@@ -1,12 +1,6 @@
-
-
-
+import { user } from "@/auth-schema";
+import { db } from "@/db/drizzle";
 import { authClient } from "@/lib/auth-client"; //import the auth client
-
-import { redirect } from "next/navigation";
-
-
-
 
 interface SignUpEmailProps {
   email: string;
@@ -55,16 +49,9 @@ export const SignInEmail = async ({ email, password }: SignInEmailProps) => {
     {
       email, // user email address
       password, // user password -> min 8 characters by default
-      callbackURL: "/login", // A URL to redirect to after the user verifies their email (optional)
+      callbackURL: "/dashboard", // A URL to redirect to after the user verifies their email (optional)
     },
     {
-      onRequest: (ctx) => {
-        //show loading
-      },
-      onSuccess: (ctx) => {
-        //redirect to the dashboard or sign in page
-        redirect("/dashboard");
-      },
       onError: (ctx) => {
         // display the error message
         alert(ctx.error.message);
@@ -77,3 +64,21 @@ export const SignInEmail = async ({ email, password }: SignInEmailProps) => {
   return { data };
 };
 
+export const SignOut = async () => {
+  await authClient.signOut({
+    query: {
+      callbackURL: "/login",
+    },
+    fetchOptions: {
+      onSuccess: () => {
+        alert("Logout Successful"); // redirect to login page
+      },
+    },
+  });
+};
+
+
+export const getListUser = async () => {
+  const listUser  = await db.select().from(user);
+  return listUser ;
+};

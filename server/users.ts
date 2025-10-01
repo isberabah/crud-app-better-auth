@@ -1,5 +1,6 @@
 import { user } from "@/auth-schema";
 import { db } from "@/db/drizzle";
+import { User } from "@/db/schema";
 import { authClient } from "@/lib/auth-client"; //import the auth client
 
 interface SignUpEmailProps {
@@ -21,10 +22,10 @@ export const SignUpEmail = async ({
       callbackURL: "/dashboard", // A URL to redirect to after the user verifies their email (optional)
     },
     {
-      onRequest: (ctx) => {
+      onRequest: () => {
         //show loading
       },
-      onSuccess: (ctx) => {
+      onSuccess: () => {
         //redirect to the dashboard or sign in page
       },
       onError: (ctx) => {
@@ -78,7 +79,9 @@ export const SignOut = async () => {
 };
 
 
-export const getListUser = async () => {
-  const listUser  = await db.select().from(user);
-  return listUser ;
+export const getListUser = async (): Promise<User[]> => {
+  const users = await db.query.user.findMany({
+    columns: { id: true, name: true, email: true },
+  });
+  return users;
 };

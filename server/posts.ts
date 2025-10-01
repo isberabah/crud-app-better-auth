@@ -56,3 +56,13 @@ export async function deletePost(id: string) {
     throw error;
   }
 }
+
+
+export const getPostsByUserId = async (userId: string): Promise<Post[]> => {
+  const Posts = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.userId, userId))
+    .orderBy(posts.createdAt);
+  return Posts;
+};

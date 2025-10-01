@@ -1,5 +1,3 @@
-
-
 import TableComponent from "@/components/blog/blog-table";
 import PostForm from "@/components/blog/PostForm";
 import { ModeToggle } from "@/components/toggle -button";
@@ -14,28 +12,27 @@ import {
 } from "@/components/ui/dialog";
 import LogoutButton from "@/components/user/logout-button";
 import { auth } from "@/lib/auth";
+import { SignOut } from "@/server/users";
 
-import {WrenchIcon } from "lucide-react";
+import { WrenchIcon } from "lucide-react";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-
-const DashboardPage =  async () => {
+const DashboardPage = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
-  const userId = session?.user?.id;
+
   if (!session?.user) {
-    // Redirect to login in real app
-    return (
-      <div className="p-4">You must be logged in to view your dashboard.</div>
-    );
+    await SignOut();
+    redirect("/login");
   }
-
-
 
   return (
     <div className="flex flex-col gap-4 max-w-7xl mx-auto p-4 md:p-24">
       <div className="flex items-center justify-end pt-4 pr-2 gap-x-3">
-        <LogoutButton/>
-        <pre className="text-sm text-gray-300">Current USER: {session?.user?.name}</pre>
+        <LogoutButton />
+        <pre className="text-sm text-gray-300">
+          Current USER: {session?.user?.name}
+        </pre>
         <ModeToggle />
       </div>
       <div className="flex flex-col justify-between ">
@@ -54,7 +51,7 @@ const DashboardPage =  async () => {
                   Add a new post to Database
                 </DialogDescription>
               </DialogHeader>
-              <PostForm />  
+              <PostForm />
             </DialogContent>
           </Dialog>
         </div>
